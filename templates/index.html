@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>📋 Task Manager</h1>
+
+    <!-- Add Task -->
+    <form action="/add" method="POST">
+        <input type="text" name="task" placeholder="New task" required>
+        <button type="submit">Add</button>
+    </form>
+
+    <!-- Task List -->
+    <ul>
+        {% for task in tasks %}
+        <li>
+            <span class="{{ 'done' if task['done'] else '' }}">{{ task['name'] }} [{{ '✅' if task['done'] else '❌' }}]</span>
+            <div class="actions">
+                <a href="/toggle/{{ loop.index0 }}">Toggle</a>
+                <a href="/delete/{{ loop.index0 }}">Delete</a>
+
+                <!-- Edit Form -->
+                <form action="/edit/{{ loop.index0 }}" method="POST" style="display:inline;">
+                    <input type="text" name="new_task" value="{{ task['name'] }}" required>
+                    <button type="submit">Save</button>
+                    <button type="button" class="cancel" onclick="this.form.reset()">Cancel</button>
+                </form>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+</body>
+</html>
