@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -5,7 +6,7 @@ from ai_service import suggest_tasks
 from models import db, User, Task
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "taskflow-secret-key"
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "taskflow-secret-key")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///tasks.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
