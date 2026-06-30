@@ -5,11 +5,10 @@
   <title>TaskFlow</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
   <style>
-    *, *::before, *::after { cursor: none !important; margin: 0; padding: 0; box-sizing: border-box; }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #0a0a0f; color: #fff; font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
-
     body::before {
       content: ''; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
       background: radial-gradient(ellipse at 20% 50%, #7c3aed22 0%, transparent 50%),
@@ -21,61 +20,29 @@
       0% { transform: translate(0,0) rotate(0deg); }
       100% { transform: translate(2%,2%) rotate(1deg); }
     }
-
-    /* Custom Cursor */
-    .cursor-dot {
-      width: 8px; height: 8px; background: #7c3aed;
-      border-radius: 50%; position: fixed; pointer-events: none;
-      z-index: 9999; transition: transform 0.1s ease;
-    }
-    .cursor-trail {
-      width: 30px; height: 30px; border: 1.5px solid #06b6d488;
-      border-radius: 50%; position: fixed; pointer-events: none;
-      z-index: 9998; transition: all 0.12s ease;
-    }
-
-    /* Loop SVG */
-    .loop-svg {
-      position: absolute; top: -18px; left: -10px;
-      width: 160px; height: 60px; pointer-events: none;
-    }
-    .loop-path {
-      fill: none; stroke: url(#loopGrad); stroke-width: 2;
-      stroke-dasharray: 300; stroke-dashoffset: 300;
-      animation: drawLoop 2s ease forwards, loopGlow 2s ease-in-out infinite alternate 2s;
-    }
-    @keyframes drawLoop { to { stroke-dashoffset: 0; } }
-    @keyframes loopGlow {
-      0% { filter: drop-shadow(0 0 3px #7c3aed); }
-      100% { filter: drop-shadow(0 0 8px #06b6d4); }
-    }
-
-    /* Navbar */
     .navbar-custom {
       background: rgba(255,255,255,0.03); backdrop-filter: blur(20px);
       border-bottom: 1px solid rgba(255,255,255,0.08); padding: 1rem 2rem;
     }
     .brand-logo {
-      font-size: 1.5rem; font-weight: 800; position: relative;
+      font-size: 1.5rem; font-weight: 800;
       background: linear-gradient(135deg, #7c3aed, #06b6d4);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-
-    /* Stats */
+    #anim-text span {
+      display: inline-block;
+      background: linear-gradient(135deg, #7c3aed, #06b6d4);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
     .stats-bar { display: flex; gap: 1rem; padding: 1.5rem 2rem; overflow-x: auto; }
     .stat-card {
       background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px; padding: 1rem 1.5rem; min-width: 140px;
-      text-align: center; transition: all 0.3s ease;
+      border-radius: 16px; padding: 1rem 1.5rem; min-width: 140px; text-align: center; transition: all 0.3s ease;
     }
     .stat-card:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); }
     .stat-number { font-size: 2rem; font-weight: 800; line-height: 1; }
     .stat-label { font-size: 0.75rem; color: #888; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
-
-    /* Main */
     .main-container { max-width: 900px; margin: 0 auto; padding: 0 2rem 4rem; }
-
-    /* Add Task */
     .add-task-card {
       background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
       border-radius: 20px; padding: 1.5rem; margin-bottom: 2rem; backdrop-filter: blur(10px);
@@ -99,8 +66,6 @@
       border-radius: 12px; padding: 0.75rem 1.5rem; color: #fff; font-weight: 600; transition: all 0.3s ease;
     }
     .btn-add:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(124,58,237,0.4); color: #fff; }
-
-    /* Kanban */
     .kanban-wrapper { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
     .kanban-col {
       background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
@@ -113,8 +78,6 @@
     }
     .col-dot { width: 10px; height: 10px; border-radius: 50%; }
     .col-count { margin-left: auto; background: rgba(255,255,255,0.1); border-radius: 20px; padding: 2px 10px; font-size: 0.75rem; }
-
-    /* Task Card */
     .task-card {
       background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
       border-radius: 14px; padding: 1rem; margin-bottom: 0.75rem;
@@ -123,17 +86,14 @@
     .task-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 3px 0 0 3px; }
     .task-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
     .task-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.5rem; color: #e2e8f0; }
-
     .badge-high { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
     .badge-medium { background: rgba(245,158,11,0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
     .badge-low { background: rgba(34,197,94,0.2); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
     .priority-badge { font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
-
     .todo-card::before { background: #6366f1; }
     .progress-card::before { background: #f59e0b; }
     .done-card::before { background: #10b981; }
     .done-card .task-name { text-decoration: line-through; color: #555; }
-
     .task-actions { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
     .btn-action { border: none; border-radius: 8px; padding: 4px 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; text-decoration: none; }
     .btn-toggle { background: rgba(99,102,241,0.2); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); }
@@ -143,32 +103,33 @@
     .due-date { font-size: 0.72rem; color: #666; margin-top: 0.25rem; }
     .empty-state { text-align: center; padding: 2rem 1rem; color: #444; font-size: 0.85rem; }
     .empty-state i { font-size: 2rem; margin-bottom: 0.5rem; display: block; }
-
+    .ai-panel {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 1.5rem; margin-bottom: 2rem; backdrop-filter: blur(10px);
+    }
+    .ai-title { display: flex; align-items: center; gap: 0.6rem; font-weight: 800; color: #e2e8f0; margin-bottom: 0.8rem; }
+    .ai-suggestion-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.8rem; margin-top: 1rem; }
+    .ai-suggestion {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 14px; padding: 1rem; min-height: 150px; display: flex; flex-direction: column; gap: 0.55rem;
+    }
+    .ai-suggestion-name { font-weight: 700; color: #f8fafc; line-height: 1.3; }
+    .ai-suggestion-desc { color: #94a3b8; font-size: 0.82rem; line-height: 1.4; flex: 1; }
+    .flash-message {
+      background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.28);
+      color: #fbbf24; border-radius: 12px; padding: 0.8rem 1rem; margin-bottom: 1rem; font-size: 0.88rem;
+    }
     @media (max-width: 768px) { .kanban-wrapper { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
-<!-- Custom Cursor -->
-<div class="cursor-dot" id="cursorDot"></div>
-<div class="cursor-trail" id="cursorTrail"></div>
-
-<!-- Particles -->
 <canvas id="particles" style="position:fixed;top:0;left:0;z-index:-1;pointer-events:none;"></canvas>
 
 <!-- Navbar -->
 <nav class="navbar-custom d-flex align-items-center justify-content-between">
   <div class="brand-logo">
-    <svg class="loop-svg" viewBox="0 0 160 60">
-      <defs>
-        <linearGradient id="loopGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" style="stop-color:#7c3aed"/>
-          <stop offset="100%" style="stop-color:#06b6d4"/>
-        </linearGradient>
-      </defs>
-      <path class="loop-path" d="M10,35 C20,10 50,5 70,25 C90,45 120,50 140,30 C155,15 150,5 135,8 C120,11 115,30 130,35 C145,40 155,30 150,20"/>
-    </svg>
-    <i class="fa-solid fa-bolt me-2"></i>TaskFlow
+    <i class="fa-solid fa-bolt me-2"></i><span id="anim-text">TaskFlow</span>
   </div>
   <div style="color:#555;font-size:0.8rem;">AI-Powered Task Manager</div>
 </nav>
@@ -195,6 +156,50 @@
 
 <!-- Main -->
 <div class="main-container">
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="flash-message"><i class="fa fa-circle-info me-2"></i>{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <!-- AI Planner -->
+  <div class="ai-panel">
+    <div class="ai-title"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Planner</div>
+    <form action="/ai/suggest" method="POST">
+      <div class="row g-2 align-items-center">
+        <div class="col-md-10">
+          <input type="text" name="goal" class="form-control form-control-dark" value="{{ ai_goal or '' }}" placeholder="Describe a goal, project, or messy idea..." required>
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-add w-100"><i class="fa fa-sparkles"></i></button>
+        </div>
+      </div>
+    </form>
+
+    {% if ai_suggestions %}
+      <div class="ai-suggestion-grid">
+        {% for suggestion in ai_suggestions %}
+          <div class="ai-suggestion">
+            <div class="ai-suggestion-name">{{ suggestion.name }}</div>
+            {% if suggestion.description %}<div class="ai-suggestion-desc">{{ suggestion.description }}</div>{% endif %}
+            <div>
+              <span class="priority-badge badge-{{ suggestion.priority|lower }}">{{ suggestion.priority }}</span>
+              {% if suggestion.due_date %}<span class="due-date ms-2"><i class="fa fa-calendar"></i> {{ suggestion.due_date }}</span>{% endif %}
+            </div>
+            <form action="/add" method="POST">
+              <input type="hidden" name="task" value="{{ suggestion.name }}">
+              <input type="hidden" name="description" value="{{ suggestion.description }}">
+              <input type="hidden" name="priority" value="{{ suggestion.priority }}">
+              <input type="hidden" name="due_date" value="{{ suggestion.due_date }}">
+              <button type="submit" class="btn-action btn-toggle"><i class="fa fa-plus"></i> Add task</button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
 
   <!-- Add Task -->
   <div class="add-task-card">
@@ -232,8 +237,9 @@
       {% set todo_tasks = tasks|selectattr('status','eq','Todo')|list %}
       {% if todo_tasks %}
         {% for task in todo_tasks %}
-        <div class="task-card todo-card">
+          <div class="task-card todo-card">
           <div class="task-name">{{ task.name }}</div>
+          {% if task.description %}<div class="ai-suggestion-desc">{{ task.description }}</div>{% endif %}
           <span class="priority-badge badge-{{ task.priority|lower }}">{{ task.priority }}</span>
           {% if task.due_date %}<div class="due-date"><i class="fa fa-calendar"></i> {{ task.due_date }}</div>{% endif %}
           <div class="task-actions">
@@ -256,8 +262,9 @@
       {% set progress_tasks = tasks|selectattr('status','eq','In Progress')|list %}
       {% if progress_tasks %}
         {% for task in progress_tasks %}
-        <div class="task-card progress-card">
+          <div class="task-card progress-card">
           <div class="task-name">{{ task.name }}</div>
+          {% if task.description %}<div class="ai-suggestion-desc">{{ task.description }}</div>{% endif %}
           <span class="priority-badge badge-{{ task.priority|lower }}">{{ task.priority }}</span>
           {% if task.due_date %}<div class="due-date"><i class="fa fa-calendar"></i> {{ task.due_date }}</div>{% endif %}
           <div class="task-actions">
@@ -280,8 +287,9 @@
       {% set done_tasks = tasks|selectattr('status','eq','Done')|list %}
       {% if done_tasks %}
         {% for task in done_tasks %}
-        <div class="task-card done-card">
+          <div class="task-card done-card">
           <div class="task-name">{{ task.name }}</div>
+          {% if task.description %}<div class="ai-suggestion-desc">{{ task.description }}</div>{% endif %}
           <span class="priority-badge badge-{{ task.priority|lower }}">{{ task.priority }}</span>
           {% if task.due_date %}<div class="due-date"><i class="fa fa-calendar"></i> {{ task.due_date }}</div>{% endif %}
           <div class="task-actions">
@@ -325,15 +333,63 @@ function animateParticles() {
 animateParticles();
 window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
-// SMOOTH ANIMATIONS
-document.querySelectorAll('.task-card').forEach((card, i) => {
-  card.style.opacity = '0';
-  card.style.transform = 'translateY(20px)';
-  setTimeout(() => {
-    card.style.transition = 'all 0.4s ease';
-    card.style.opacity = '1';
-    card.style.transform = 'translateY(0)';
-  }, 100 + i * 80);
+// ANIME.JS ANIMATIONS
+window.addEventListener('load', () => {
+  // Navbar వస్తుంది
+  anime({
+    targets: '.navbar-custom',
+    translateY: [-60, 0],
+    opacity: [0, 1],
+    duration: 800,
+    easing: 'easeOutExpo'
+  });
+
+  // Stats ఒక్కొక్కటి వస్తాయి
+  anime({
+    targets: '.stat-card',
+    translateY: [-30, 0],
+    opacity: [0, 1],
+    delay: anime.stagger(100),
+    duration: 600,
+    easing: 'easeOutExpo'
+  });
+
+  // Progress bar fill అవుతుంది
+  anime({
+    targets: '.main-container',
+    translateY: [40, 0],
+    opacity: [0, 1],
+    duration: 700,
+    delay: 400,
+    easing: 'easeOutExpo'
+  });
+
+  // Kanban columns from left 
+  anime({
+    targets: '.kanban-col',
+    translateY: [60, 0],
+    opacity: [0, 1],
+    delay: anime.stagger(150, {start: 500}),
+    duration: 800,
+    easing: 'easeOutExpo'
+  });
+
+  // Task cards pop
+  anime({
+    targets: '.task-card',
+    scale: [0.8, 1],
+    opacity: [0, 1],
+    delay: anime.stagger(100, {start: 800}),
+    duration: 600,
+    easing: 'easeOutBack'
+  });
+
+  // Buttons  interactions
+  document.querySelectorAll('.btn-action').forEach(btn => {
+    btn.addEventListener('click', () => {
+      anime({ targets: btn, scale: [1, 0.85, 1], duration: 300, easing: 'easeInOutQuad' });
+    });
+  });
 });
 
 // PROGRESS BAR
@@ -364,26 +420,27 @@ document.querySelectorAll('.task-card').forEach(card => {
     card.style.boxShadow = 'none';
   });
 });
+</script>
 
-// CUSTOM CURSOR
-const dot = document.getElementById('cursorDot');
-const trail = document.getElementById('cursorTrail');
-document.addEventListener('mousemove', e => {
-  dot.style.left = e.clientX - 4 + 'px';
-  dot.style.top = e.clientY - 4 + 'px';
-  setTimeout(() => {
-    trail.style.left = e.clientX - 15 + 'px';
-    trail.style.top = e.clientY - 15 + 'px';
-  }, 80);
+<script type="module">
+import { animate, stagger, splitText } from 'https://esm.sh/animejs';
+const { chars } = splitText('#anim-text', { words: false, chars: true });
+// Page open అయినప్పుడు ఒక్కసారి
+const anim = animate(chars, {
+  y: [
+    { to: '-0.75rem', ease: 'outExpo', duration: 600 },
+    { to: 0, ease: 'outBounce', duration: 800, delay: 100 }
+  ],
+  rotate: { from: '-1turn', delay: 0 },
+  delay: stagger(50),
+  ease: 'inOutCirc',
 });
-document.addEventListener('mousedown', () => {
-  dot.style.transform = 'scale(2)';
-  trail.style.borderColor = '#7c3aed';
-});
-document.addEventListener('mouseup', () => {
-  dot.style.transform = 'scale(1)';
-  trail.style.borderColor = '#06b6d488';
+
+// Click చేసినప్పుడు మళ్ళీ play
+document.querySelector('.brand-logo').addEventListener('click', () => {
+  anim.restart();
 });
 </script>
+
 </body>
 </html>
